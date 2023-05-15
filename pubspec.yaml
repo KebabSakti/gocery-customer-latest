@@ -1,0 +1,71 @@
+name: gocery
+description: Your grocery solutions.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.6 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  get_it: ^7.2.0
+  flutter_native_splash: ^2.2.16
+  flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
+  font_awesome_flutter: ^10.3.0
+  flutter_secure_storage: ^7.0.1
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.8.0
+  carousel_slider: ^4.2.1
+  http: ^0.13.5
+  shimmer: ^2.0.0
+  cached_network_image: ^3.2.3
+  permission_handler: ^10.2.0
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
+  google_maps_flutter: ^2.2.3
+  firebase_core: ^2.9.0
+  firebase_auth: ^4.4.0
+  google_sign_in: ^6.0.2
+  flutter_facebook_auth: ^5.0.7
+  fluttertoast: ^8.2.1
+  flutter_dotenv: ^5.0.2
+  awesome_notifications: ^0.6.21
+  firebase_messaging: ^14.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: "^0.9.2"
+  very_good_analysis: ^3.1.0
+  build_runner: ^2.3.3
+  freezed: ^2.3.2
+  json_serializable: ^6.6.0
+
+flutter_native_splash:
+  color: "#64BA02"
+  image: asset/image/gocery_icon_white.png
+  android: true
+  ios: true
+
+flutter_icons:
+  android: "launcher_icon"
+  image_path: "asset/image/gocery_icon_only.png"
+  ios: true
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - .env
+    - asset/image/
+  fonts:
+    - family: SFPRO
+      fonts:
+        - asset: asset/font/SFPRODISPLAYREGULAR.OTF
+        - asset: asset/font/SFPRODISPLAYMEDIUM.OTF
+          weight: 700

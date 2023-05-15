@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>674023205180-cic46aftoibd641k8jdhhecam1ktvigc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.674023205180-cic46aftoibd641k8jdhhecam1ktvigc</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>674023205180-0i7h7jvfv2d0a4j9ivlll7uj063mhh4a.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA_z_ydOKUJOHHDgaI_2IJwZ_lpTXKQ-js</string>
+	<key>GCM_SENDER_ID</key>
+	<string>674023205180</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gocery</string>
+	<key>PROJECT_ID</key>
+	<string>ayo-belanja-7bc1e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ayo-belanja-7bc1e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:674023205180:ios:8a850a14469c0f17851639</string>
+	<key>DATABASE_URL</key>
+	<string>https://ayo-belanja-7bc1e.firebaseio.com</string>
+</dict>
+</plist>
