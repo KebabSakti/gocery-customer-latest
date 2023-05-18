@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gocery/view/bloc/global/global_cubit.dart';
 
 import 'common/config/routes.dart';
 import 'common/config/style.dart';
@@ -24,13 +25,16 @@ class Gocery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mobku',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: Style.light,
-      darkTheme: Style.dark,
-      routes: Routes.list(),
+    return BlocProvider(
+      create: (context) => GlobalCubit(),
+      child: MaterialApp(
+        title: 'Mobku',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.light,
+        theme: Style.light,
+        darkTheme: Style.dark,
+        routes: Routes.list(),
+      ),
     );
   }
 }

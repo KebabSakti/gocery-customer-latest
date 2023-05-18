@@ -1,25 +1,35 @@
-import 'package:gocery/api/firebase_api.dart';
-
 import '../api/auth_api.dart';
-import '../model/customer/customer_model.dart';
+import '../api/firebase_api.dart';
 
 class AuthController {
   final _authApi = AuthApi();
   final _firebaseApi = FirebaseApi();
 
-  Future<void> googleSignIn() async {
-    //
+  Future<String?> googleSignIn() async {
+    String? token;
+
+    final firebaseToken = await _firebaseApi.googleSignIn();
+
+    if (firebaseToken != null) {
+      token = await _authApi.validate(firebaseToken);
+    }
+
+    return token;
   }
 
-  Future<void> facebookSignIn() async {
-    //
+  Future<String?> facebookSignIn() async {
+    String? token;
+
+    final firebaseToken = await _firebaseApi.facebookSignIn();
+
+    if (firebaseToken != null) {
+      token = await _authApi.validate(firebaseToken);
+    }
+
+    return token;
   }
 
   Future<void> signOut() async {
-    //
-  }
-
-  void authListener(void Function(CustomerModel? accountModel) onData) {
-    //
+    await _firebaseApi.signOut();
   }
 }
