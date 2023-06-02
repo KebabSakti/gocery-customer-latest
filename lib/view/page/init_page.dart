@@ -1,61 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:gocery/common/config/const.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class InitPage extends StatelessWidget {
+import '../../common/config/const.dart';
+import '../bloc/global/global_cubit.dart';
+
+class InitPage extends StatefulWidget {
   const InitPage({super.key});
 
   @override
+  State<InitPage> createState() => _InitPageState();
+}
+
+class _InitPageState extends State<InitPage> {
+  @override
+  void initState() {
+    context.read<GlobalCubit>().load();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
-
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: SafeArea(
-          child: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) => Card(
-                color: theme.colorScheme.surface,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  padding: const EdgeInsets.all(large),
-                  child: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend laoreet laoreet.',
-                    style: TextStyle(
-                      fontSize: medium,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(small),
-            child: ElevatedButton(
-              onPressed: () {
-                //
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                minimumSize: const Size.fromHeight(45),
-                shape: const StadiumBorder(),
-              ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
-              child: Text(
-                'Submit to continue',
-                style: TextStyle(
-                  color: theme.colorScheme.onPrimary,
-                  fontSize: medium,
-                ),
-              ),
-            ),
-          )
-        ],
-      )),
+    return BlocListener<GlobalCubit, GlobalState>(
+      listener: (context, state) {
+        final config = state.configModel;
+        final target = config.authToken == null ? authPage : appPage;
+        Navigator.of(context).pushNamedAndRemoveUntil(target, (route) => false);
+      },
+      child: const Scaffold(),
     );
   }
 }

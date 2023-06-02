@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
@@ -17,7 +18,14 @@ class GlobalCubit extends Cubit<GlobalState> {
 
   Future<void> load() async {
     final config = await _configController.show();
+
     emit(state.copyWith(configModel: config, loading: false, exception: null));
+  }
+
+  Future<void> theme(ThemeMode theme) async {
+    final updatedConfig = state.configModel.copyWith(theme: theme);
+    _configController.update(updatedConfig);
+    emit(state.copyWith(configModel: updatedConfig));
   }
 
   Future<void> googleSignIn() async {
@@ -25,6 +33,7 @@ class GlobalCubit extends Cubit<GlobalState> {
       emit(state.copyWith(loading: true));
 
       final token = await _authController.googleSignIn();
+      await _updateToken(token: token);
 
       emit(state.copyWith.configModel(authToken: token));
     } on Exception catch (e) {
@@ -37,6 +46,7 @@ class GlobalCubit extends Cubit<GlobalState> {
       emit(state.copyWith(loading: true));
 
       final token = await _authController.facebookSignIn();
+      await _updateToken(token: token);
 
       emit(state.copyWith.configModel(authToken: token));
     } on Exception catch (e) {
@@ -49,10 +59,16 @@ class GlobalCubit extends Cubit<GlobalState> {
       emit(state.copyWith(loading: true));
 
       await _authController.signOut();
+      await _updateToken();
 
       emit(state.copyWith.configModel(authToken: null));
     } on Exception catch (e) {
       emit(state.copyWith(loading: false, exception: e));
     }
+  }
+
+  Future<void> _updateToken({String? token}) async {
+    final updatedConfig = state.configModel.copyWith(authToken: token);
+    await _configController.update(updatedConfig);
   }
 }

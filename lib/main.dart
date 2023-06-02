@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gocery/view/bloc/global/global_cubit.dart';
 
 import 'common/config/routes.dart';
 import 'common/config/style.dart';
@@ -13,6 +12,9 @@ import 'common/helper/network.dart';
 import 'common/helper/simple_bloc_observer.dart';
 import 'controller/config_controller.dart';
 import 'firebase_options.dart';
+import 'view/bloc/app/app_cubit.dart';
+import 'view/bloc/cart/cart_cubit.dart';
+import 'view/bloc/global/global_cubit.dart';
 
 void main() async {
   await _bootstrapping();
@@ -24,16 +26,27 @@ class Gocery extends StatelessWidget {
   const Gocery({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GlobalCubit(),
-      child: MaterialApp(
-        title: 'Mobku',
-        debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.light,
-        theme: Style.light,
-        darkTheme: Style.dark,
-        routes: Routes.list(),
+Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => GlobalCubit()),
+        BlocProvider(create: (context) => AppCubit()),
+        BlocProvider(create: (context) => CartCubit()),
+      ],
+      child: BlocSelector<GlobalCubit, GlobalState, ThemeMode>(
+        selector: (state) {
+          return state.configModel.theme;
+        },
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Mobku',
+            debugShowCheckedModeBanner: false,
+            themeMode: state,
+            theme: Style.light,
+            darkTheme: Style.dark,
+            routes: Routes.list(),
+          );
+        },
       ),
     );
   }
