@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
-import '../../controller/config_controller.dart';
 import 'failure.dart';
+import 'storage.dart';
 
 abstract class Network {
   Future<NetworkResponse> get(String url, {Map<String, String>? headers});
@@ -32,7 +31,16 @@ class NetworkResponse {
 }
 
 class NetworkClient implements Network {
+  NetworkClient._();
+
+  static final NetworkClient _instance = NetworkClient._();
+
+  factory NetworkClient() {
+    return _instance;
+  }
+
   final _http = Client();
+  final _storage = Storage();
 
   @override
   Future<NetworkResponse> get(
@@ -109,15 +117,13 @@ class NetworkClient implements Network {
   }
 
   Future<Map<String, String>> _headers(Map<String, String>? headers) async {
-    final configController = GetIt.I<ConfigController>();
-    final config = await configController.show();
-
+    final authToken = await _storage.read('auth');
     final defaultHeaders = {'Content-Type': 'application/json'};
     final mergedHeaders =
         headers == null ? defaultHeaders : {...defaultHeaders, ...headers};
 
-    if (config.authToken != null) {
-      mergedHeaders['Authorization'] = 'Bearer ${config.authToken}';
+    if (authToken != null) {
+      mergedHeaders['Authorization'] = 'Bearer $authToken';
     }
 
     return mergedHeaders;

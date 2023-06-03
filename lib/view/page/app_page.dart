@@ -5,7 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../bloc/app/app_cubit.dart';
 import '../bloc/cart/cart_cubit.dart';
+import 'chat_page.dart';
 import 'home_page.dart';
+import 'order_page.dart';
+import 'profile_page.dart';
 
 class AppPage extends StatefulWidget {
   const AppPage({super.key});
@@ -64,9 +67,9 @@ class _AppPageState extends State<AppPage> {
           physics: const NeverScrollableScrollPhysics(),
           children: const [
             HomePage(),
-            Center(child: Text('ORDER')),
-            Center(child: Text('CHAT')),
-            Center(child: Text('PROFILE')),
+            OrderPage(),
+            ChatPage(),
+            ProfilePage(),
           ],
         ),
         bottomNavigationBar: Container(

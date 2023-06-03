@@ -4,7 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../common/config/const.dart';
-import '../bloc/global/global_cubit.dart';
+import '../bloc/auth/auth_cubit.dart';
 import '../widget/m_button.dart';
 
 class AuthPage extends StatelessWidget {
@@ -16,13 +16,10 @@ class AuthPage extends StatelessWidget {
 
     final theme = Theme.of(context);
     final screen = MediaQuery.of(context).size;
-    final globalCubit = context.read<GlobalCubit>();
 
-    return BlocListener<GlobalCubit, GlobalState>(
-      listenWhen: (previous, current) =>
-          previous.configModel.authToken != current.configModel.authToken,
+    return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.configModel.authToken != null) {
+        if (state.authToken != null) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(appPage, (route) => false);
         }
@@ -74,7 +71,7 @@ class AuthPage extends StatelessWidget {
                         ],
                       ),
                       onPressed: () {
-                        globalCubit.facebookSignIn();
+                        context.read<AuthCubit>().facebookSignIn();
                       },
                     ),
                     const SizedBox(height: 4),
@@ -94,7 +91,7 @@ class AuthPage extends StatelessWidget {
                         ],
                       ),
                       onPressed: () {
-                        globalCubit.googleSignIn();
+                        context.read<AuthCubit>().googleSignIn();
                       },
                     ),
                     const SizedBox(height: medium),

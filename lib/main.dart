@@ -4,17 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get_it/get_it.dart';
 
 import 'common/config/routes.dart';
 import 'common/config/style.dart';
-import 'common/helper/network.dart';
 import 'common/helper/simple_bloc_observer.dart';
-import 'controller/config_controller.dart';
 import 'firebase_options.dart';
 import 'view/bloc/app/app_cubit.dart';
+import 'view/bloc/auth/auth_cubit.dart';
 import 'view/bloc/cart/cart_cubit.dart';
-import 'view/bloc/global/global_cubit.dart';
+import 'view/bloc/theme/theme_cubit.dart';
 
 void main() async {
   await _bootstrapping();
@@ -26,22 +24,20 @@ class Gocery extends StatelessWidget {
   const Gocery({super.key});
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => GlobalCubit()),
+        BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => AppCubit()),
         BlocProvider(create: (context) => CartCubit()),
       ],
-      child: BlocSelector<GlobalCubit, GlobalState, ThemeMode>(
-        selector: (state) {
-          return state.configModel.theme;
-        },
+      child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
             title: 'Mobku',
             debugShowCheckedModeBanner: false,
-            themeMode: state,
+            themeMode: state.themeMode,
             theme: Style.light,
             darkTheme: Style.dark,
             routes: Routes.list(),
@@ -92,14 +88,6 @@ Future<void> _bootstrapping() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
   await _preCacheAsset();
-  await _services();
-}
-
-Future<void> _services() async {
-  final getIt = GetIt.instance;
-
-  getIt.registerLazySingleton(() => ConfigController());
-  getIt.registerLazySingleton<Network>(() => NetworkClient());
 }
 
 Future<void> _preCacheAsset() async {

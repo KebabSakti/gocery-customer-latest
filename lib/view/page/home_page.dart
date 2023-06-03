@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../common/config/const.dart';
-import '../bloc/global/global_cubit.dart';
+import '../bloc/auth/auth_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    log('HOME PAGE INIT');
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -116,7 +125,7 @@ class _HomePageState extends State<HomePage> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                context.read<GlobalCubit>().signOut();
+                context.read<AuthCubit>().signOut();
 
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(authPage, (route) => false);
