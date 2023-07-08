@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 
 dynamic parseJson(String json) {
   final parsed = jsonDecode(json);
@@ -19,4 +20,10 @@ void showToast(String message, {Toast? toastLength = Toast.LENGTH_SHORT}) {
     timeInSecForIosWeb: 1,
     fontSize: 16.0,
   );
+}
+
+String uuid() {
+  const uuid = Uuid();
+
+  return uuid.v1();
 }

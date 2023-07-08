@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'app_cubit.dart';
+part of 'chat_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,35 +15,28 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$AppState {
-  int get pageIndex => throw _privateConstructorUsedError;
-  String get notification => throw _privateConstructorUsedError;
+mixin _$ChatState {
   List<ChatRoomModel> get chats => throw _privateConstructorUsedError;
   bool get loading => throw _privateConstructorUsedError;
   Exception? get exception => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppStateCopyWith<AppState> get copyWith =>
+  $ChatStateCopyWith<ChatState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppStateCopyWith<$Res> {
-  factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
-      _$AppStateCopyWithImpl<$Res, AppState>;
+abstract class $ChatStateCopyWith<$Res> {
+  factory $ChatStateCopyWith(ChatState value, $Res Function(ChatState) then) =
+      _$ChatStateCopyWithImpl<$Res, ChatState>;
   @useResult
-  $Res call(
-      {int pageIndex,
-      String notification,
-      List<ChatRoomModel> chats,
-      bool loading,
-      Exception? exception});
+  $Res call({List<ChatRoomModel> chats, bool loading, Exception? exception});
 }
 
 /// @nodoc
-class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
-    implements $AppStateCopyWith<$Res> {
-  _$AppStateCopyWithImpl(this._value, this._then);
+class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
+    implements $ChatStateCopyWith<$Res> {
+  _$ChatStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -53,21 +46,11 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? pageIndex = null,
-    Object? notification = null,
     Object? chats = null,
     Object? loading = null,
     Object? exception = freezed,
   }) {
     return _then(_value.copyWith(
-      pageIndex: null == pageIndex
-          ? _value.pageIndex
-          : pageIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      notification: null == notification
-          ? _value.notification
-          : notification // ignore: cast_nullable_to_non_nullable
-              as String,
       chats: null == chats
           ? _value.chats
           : chats // ignore: cast_nullable_to_non_nullable
@@ -85,46 +68,31 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
 }
 
 /// @nodoc
-abstract class _$$_AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
-  factory _$$_AppStateCopyWith(
-          _$_AppState value, $Res Function(_$_AppState) then) =
-      __$$_AppStateCopyWithImpl<$Res>;
+abstract class _$$_ChatStateCopyWith<$Res> implements $ChatStateCopyWith<$Res> {
+  factory _$$_ChatStateCopyWith(
+          _$_ChatState value, $Res Function(_$_ChatState) then) =
+      __$$_ChatStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {int pageIndex,
-      String notification,
-      List<ChatRoomModel> chats,
-      bool loading,
-      Exception? exception});
+  $Res call({List<ChatRoomModel> chats, bool loading, Exception? exception});
 }
 
 /// @nodoc
-class __$$_AppStateCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$_AppState>
-    implements _$$_AppStateCopyWith<$Res> {
-  __$$_AppStateCopyWithImpl(
-      _$_AppState _value, $Res Function(_$_AppState) _then)
+class __$$_ChatStateCopyWithImpl<$Res>
+    extends _$ChatStateCopyWithImpl<$Res, _$_ChatState>
+    implements _$$_ChatStateCopyWith<$Res> {
+  __$$_ChatStateCopyWithImpl(
+      _$_ChatState _value, $Res Function(_$_ChatState) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? pageIndex = null,
-    Object? notification = null,
     Object? chats = null,
     Object? loading = null,
     Object? exception = freezed,
   }) {
-    return _then(_$_AppState(
-      pageIndex: null == pageIndex
-          ? _value.pageIndex
-          : pageIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      notification: null == notification
-          ? _value.notification
-          : notification // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_$_ChatState(
       chats: null == chats
           ? _value._chats
           : chats // ignore: cast_nullable_to_non_nullable
@@ -143,21 +111,13 @@ class __$$_AppStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_AppState implements _AppState {
-  const _$_AppState(
-      {this.pageIndex = 0,
-      this.notification = '',
-      final List<ChatRoomModel> chats = const <ChatRoomModel>[],
+class _$_ChatState implements _ChatState {
+  const _$_ChatState(
+      {final List<ChatRoomModel> chats = const <ChatRoomModel>[],
       this.loading = false,
       this.exception})
       : _chats = chats;
 
-  @override
-  @JsonKey()
-  final int pageIndex;
-  @override
-  @JsonKey()
-  final String notification;
   final List<ChatRoomModel> _chats;
   @override
   @JsonKey()
@@ -175,18 +135,14 @@ class _$_AppState implements _AppState {
 
   @override
   String toString() {
-    return 'AppState(pageIndex: $pageIndex, notification: $notification, chats: $chats, loading: $loading, exception: $exception)';
+    return 'ChatState(chats: $chats, loading: $loading, exception: $exception)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppState &&
-            (identical(other.pageIndex, pageIndex) ||
-                other.pageIndex == pageIndex) &&
-            (identical(other.notification, notification) ||
-                other.notification == notification) &&
+            other is _$_ChatState &&
             const DeepCollectionEquality().equals(other._chats, _chats) &&
             (identical(other.loading, loading) || other.loading == loading) &&
             (identical(other.exception, exception) ||
@@ -194,28 +150,22 @@ class _$_AppState implements _AppState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, pageIndex, notification,
+  int get hashCode => Object.hash(runtimeType,
       const DeepCollectionEquality().hash(_chats), loading, exception);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AppStateCopyWith<_$_AppState> get copyWith =>
-      __$$_AppStateCopyWithImpl<_$_AppState>(this, _$identity);
+  _$$_ChatStateCopyWith<_$_ChatState> get copyWith =>
+      __$$_ChatStateCopyWithImpl<_$_ChatState>(this, _$identity);
 }
 
-abstract class _AppState implements AppState {
-  const factory _AppState(
-      {final int pageIndex,
-      final String notification,
-      final List<ChatRoomModel> chats,
+abstract class _ChatState implements ChatState {
+  const factory _ChatState(
+      {final List<ChatRoomModel> chats,
       final bool loading,
-      final Exception? exception}) = _$_AppState;
+      final Exception? exception}) = _$_ChatState;
 
-  @override
-  int get pageIndex;
-  @override
-  String get notification;
   @override
   List<ChatRoomModel> get chats;
   @override
@@ -224,6 +174,6 @@ abstract class _AppState implements AppState {
   Exception? get exception;
   @override
   @JsonKey(ignore: true)
-  _$$_AppStateCopyWith<_$_AppState> get copyWith =>
+  _$$_ChatStateCopyWith<_$_ChatState> get copyWith =>
       throw _privateConstructorUsedError;
 }

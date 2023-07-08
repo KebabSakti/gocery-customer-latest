@@ -19,6 +19,7 @@ class CustomerApi {
   Future<void> update(CustomerModel customerModel) async {
     final payload = customerModel.toJson();
     removeNullFromMap(payload);
+
     await _http.put(customer, body: payload);
   }
 }

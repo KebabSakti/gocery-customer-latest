@@ -7,11 +7,12 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'common/config/routes.dart';
 import 'common/config/style.dart';
-import 'common/helper/simple_bloc_observer.dart';
 import 'firebase_options.dart';
+import 'view/bloc/account/account_cubit.dart';
 import 'view/bloc/app/app_cubit.dart';
 import 'view/bloc/auth/auth_cubit.dart';
 import 'view/bloc/cart/cart_cubit.dart';
+import 'view/bloc/chat/chat_cubit.dart';
 import 'view/bloc/theme/theme_cubit.dart';
 
 void main() async {
@@ -30,12 +31,14 @@ class Gocery extends StatelessWidget {
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => AppCubit()),
+        BlocProvider(create: (context) => AccountCubit()),
+        BlocProvider(create: (context) => ChatCubit()),
         BlocProvider(create: (context) => CartCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
-            title: 'Mobku',
+            title: 'Gocery',
             debugShowCheckedModeBanner: false,
             themeMode: state.themeMode,
             theme: Style.light,
@@ -51,7 +54,7 @@ class Gocery extends StatelessWidget {
 Future<void> _bootstrapping() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  Bloc.observer = SimpleBlocObserver();
+  // Bloc.observer = SimpleBlocObserver();
 
   AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
@@ -87,10 +90,10 @@ Future<void> _bootstrapping() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
-  await _preCacheAsset();
+  await _precache();
 }
 
-Future<void> _preCacheAsset() async {
+Future<void> _precache() async {
 //   await Future.wait([
 //     precachePicture(
 //       ExactAssetPicture(

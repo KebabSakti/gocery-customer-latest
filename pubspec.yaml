@@ -35,6 +35,8 @@ dependencies:
   awesome_notifications: ^0.6.21
   firebase_messaging: ^14.4.0
   badges: ^3.1.1
+  uuid: ^3.0.7
+  socket_io_client: ^2.0.2
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../controller/customer_controller.dart';
+import '../../../model/chat/chat_room_model.dart';
 import '../../../model/customer/customer_model.dart';
 
 part 'app_cubit.freezed.dart';
@@ -15,12 +16,12 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> load() async {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _handleNotification(message.data['type']);
+      _setInitialPage(message);
     });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        _handleNotification(message.data['type']);
+        _setInitialPage(message);
       }
     });
 
@@ -35,17 +36,17 @@ class AppCubit extends Cubit<AppState> {
     emit(state.copyWith(pageIndex: pageIndex));
   }
 
-  void _handleNotification(String type) {
-    int target = 0;
+  void _setInitialPage(RemoteMessage message) {
+    int pageIndex = 0;
 
-    if (type == 'chat') {
-      target = 2;
+    if (message.data['type'] == 'chat') {
+      pageIndex = 2;
     }
 
-    if (type == 'order') {
-      target = 1;
+    if (message.data['type'] == 'order') {
+      pageIndex = 1;
     }
 
-    setPageIndex(target);
+    setPageIndex(pageIndex);
   }
 }

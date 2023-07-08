@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
 import 'failure.dart';
@@ -45,10 +46,12 @@ class NetworkClient implements Network {
   @override
   Future<NetworkResponse> get(
     String url, {
+    Map<String, dynamic>? query,
     Map<String, String>? headers,
   }) async {
     final defaultHeaders = await _headers(headers);
-    final request = await _http.get(Uri.parse(url), headers: defaultHeaders);
+    final defaultUrl = _buildUri(url, query: query);
+    final request = await _http.get(defaultUrl, headers: defaultHeaders);
 
     if (request.statusCode >= 400) {
       _exception(request);
@@ -63,10 +66,12 @@ class NetworkClient implements Network {
   Future<NetworkResponse> post(
     String url, {
     Map<String, String>? headers,
-    Object? body,
+    Object? body = const {},
   }) async {
     final defaultHeaders = await _headers(headers);
-    final request = await _http.post(Uri.parse(url),
+    final defaultUrl = _buildUri(url);
+
+    final request = await _http.post(defaultUrl,
         headers: defaultHeaders, body: jsonEncode(body));
 
     if (request.statusCode >= 400) {
@@ -82,10 +87,12 @@ class NetworkClient implements Network {
   Future<NetworkResponse> put(
     String url, {
     Map<String, String>? headers,
-    Object? body,
+    Object? body = const {},
   }) async {
     final defaultHeaders = await _headers(headers);
-    final request = await _http.put(Uri.parse(url),
+    final defaultUrl = _buildUri(url);
+
+    final request = await _http.put(defaultUrl,
         headers: defaultHeaders, body: jsonEncode(body));
 
     if (request.statusCode >= 400) {
@@ -101,10 +108,12 @@ class NetworkClient implements Network {
   Future<NetworkResponse> delete(
     String url, {
     Map<String, String>? headers,
-    Object? body,
+    Object? body = const {},
   }) async {
     final defaultHeaders = await _headers(headers);
-    final request = await _http.delete(Uri.parse(url),
+    final defaultUrl = _buildUri(url);
+
+    final request = await _http.delete(defaultUrl,
         headers: defaultHeaders, body: jsonEncode(body));
 
     if (request.statusCode >= 400) {
@@ -114,6 +123,19 @@ class NetworkClient implements Network {
     final response = _response(request);
 
     return response;
+  }
+
+  Uri _buildUri(String url, {Map<String, dynamic>? query}) {
+    final uri = Uri(
+      scheme: dotenv.env['SCHEME'],
+      port: int.parse(dotenv.env['PORT']!),
+      host: dotenv.env['HOST'],
+      path: url,
+      queryParameters:
+          query?.map((key, value) => MapEntry(key, value?.toString())),
+    );
+
+    return uri;
   }
 
   Future<Map<String, String>> _headers(Map<String, String>? headers) async {

@@ -19,8 +19,10 @@ class CartApi {
   }
 
   Future<void> upsert(CartModel cartModel) async {
-    final payload = cartModel.toJson();
-    removeNullFromMap(payload);
-    await _http.post(cart, body: payload);
+    await _http.post(cart, body: cartModel.toJson());
+  }
+
+  Future<void> delete(String cartId) async {
+    await _http.delete(cart, body: {'id': cartId});
   }
 }

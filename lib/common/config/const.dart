@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 //LOCAL ROUTE
 const initPage = '/';
 const authPage = '/auth';
@@ -9,10 +7,12 @@ const appPage = '/app';
 const homePage = '/app/home';
 
 //REMOTE ROUTE
-final baseUrl = 'http://${dotenv.env['HOST']}:1001/api/v1/customer';
-final auth = '$baseUrl/auth';
-final customer = '$baseUrl/app/accounts';
-final cart = '$baseUrl/app/carts';
+const path = 'api/v1/customer';
+const auth = '$path/auth';
+const customer = '$path/app/accounts';
+const cart = '$path/app/carts';
+const chat = '$path/app/chats';
+const category = '$path/app/categories';
 
 //ASSETS
 const goceryIconWhite = 'asset/image/gocery_icon_white.png';

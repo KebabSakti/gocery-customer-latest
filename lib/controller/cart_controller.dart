@@ -13,4 +13,8 @@ class CartController {
   Future<void> upsert(CartModel cartModel) async {
     await _cartApi.upsert(cartModel);
   }
+
+  Future<void> delete(String cartId) async {
+    await _cartApi.delete(cartId);
+  }
 }

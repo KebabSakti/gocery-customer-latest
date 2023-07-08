@@ -5,6 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../bloc/app/app_cubit.dart';
 import '../bloc/cart/cart_cubit.dart';
+import '../bloc/category/category_cubit.dart';
+import '../bloc/chat/chat_cubit.dart';
 import 'chat_page.dart';
 import 'home_page.dart';
 import 'order_page.dart';
@@ -42,6 +44,7 @@ class _AppPageState extends State<AppPage> {
   Future<void> _init() async {
     context.read<AppCubit>().load();
     context.read<CartCubit>().load();
+    context.read<ChatCubit>().init();
   }
 
   @override
@@ -65,11 +68,16 @@ class _AppPageState extends State<AppPage> {
         body: PageView(
           controller: _pageViewController,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            HomePage(),
-            OrderPage(),
-            ChatPage(),
-            ProfilePage(),
+          children: [
+            MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => CategoryCubit()),
+              ],
+              child: const HomePage(),
+            ),
+            const OrderPage(),
+            const ChatPage(),
+            const ProfilePage(),
           ],
         ),
         bottomNavigationBar: Container(
