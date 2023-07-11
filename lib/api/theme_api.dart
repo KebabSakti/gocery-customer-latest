@@ -6,12 +6,23 @@ class ThemeApi {
   final _storage = Storage();
 
   Future<ThemeMode> show() async {
-    final theme = await _storage.read('theme') ?? ThemeMode.light;
+    ThemeMode initialTheme = ThemeMode.light;
+    final theme = await _storage.read('theme');
 
-    return theme;
+    if (theme != null) {
+      if (theme == 'light') {
+        initialTheme = ThemeMode.light;
+      }
+
+      if (theme == 'dark') {
+        initialTheme = ThemeMode.dark;
+      }
+    }
+
+    return initialTheme;
   }
 
   Future<void> update(ThemeMode themeMode) async {
-    await _storage.write('theme', themeMode);
+    await _storage.write('theme', themeMode.name);
   }
 }

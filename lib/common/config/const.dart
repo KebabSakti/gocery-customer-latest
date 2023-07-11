@@ -13,6 +13,7 @@ const customer = '$path/app/accounts';
 const cart = '$path/app/carts';
 const chat = '$path/app/chats';
 const category = '$path/app/categories';
+const banner = '$path/app/banners';
 
 //ASSETS
 const goceryIconWhite = 'asset/image/gocery_icon_white.png';

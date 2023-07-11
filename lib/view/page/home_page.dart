@@ -1,14 +1,15 @@
 import 'package:badges/badges.dart' as badges;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gocery/view/bloc/banner/banner_cubit.dart';
 
 import '../../common/config/const.dart';
-import '../../model/cart/cart_model.dart';
-import '../bloc/auth/auth_cubit.dart';
 import '../bloc/cart/cart_cubit.dart';
 import '../bloc/category/category_cubit.dart';
 import '../widget/shimmer_loader.dart';
+import '../widget/widget_carousel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,11 +19,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final categoryBloc = CategoryCubit();
+  final bannerBloc = BannerCubit();
+
   @override
   void initState() {
-    context.read<CategoryCubit>().load();
+    categoryBloc.load();
+    bannerBloc.load();
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    categoryBloc.close();
+    bannerBloc.close();
+
+    super.dispose();
   }
 
   @override
@@ -94,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
+      body: ListView(
         children: [
           Container(
             height: kToolbarHeight,
@@ -103,6 +116,7 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: medium),
               child: BlocBuilder<CategoryCubit, CategoryState>(
+                bloc: categoryBloc,
                 builder: (context, state) {
                   final categoryLoading = ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -158,51 +172,132 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Expanded(
-            child: BlocBuilder<CartCubit, CartState>(
-              builder: (context, state) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          const SizedBox(height: medium),
+          Container(
+            width: double.infinity,
+            height: 150,
+            padding: const EdgeInsets.symmetric(horizontal: medium),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(medium),
+              child: BlocBuilder<BannerCubit, BannerState>(
+                bloc: bannerBloc,
+                builder: (context, state) {
+                  const bannerLoading = ShimmerLoader();
+
+                  if (state.loading) {
+                    return bannerLoading;
+                  }
+
+                  if (state.banners.isNotEmpty) {
+                    final bannerWidget = List.generate(
+                      state.banners.length,
+                      (index) => CachedNetworkImage(
+                        imageUrl: state.banners[index].image!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        placeholder: (context, url) => bannerLoading,
+                      ),
+                    );
+
+                    return WidgetCarousel(children: bannerWidget);
+                  }
+
+                  return bannerLoading;
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: medium),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: medium),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          if (state.cart.isNotEmpty) {
-                            context.read<CartCubit>().decrement(state.cart[0]);
-                          }
-                        },
-                        child: const Text('-')),
                     Text(
-                      state.cart.isEmpty ? '0' : state.cart[0].qty.toString(),
-                      style: const TextStyle(
-                        fontSize: large3x,
+                      'Paling Laku',
+                      style: TextStyle(
+                        color: theme.colorScheme.onBackground,
+                        fontSize: medium,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          context.read<CartCubit>().increment(const CartModel(
-                                productId:
-                                    '01dbc28d-c779-4ad9-afcd-78ba0a31fd7f',
-                                price: 11181,
-                              ));
-                        },
-                        child: const Text('+')),
+                    Text(
+                      'Lihat Semua',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: medium,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ],
-                );
-              },
+                ),
+                const SizedBox(height: small),
+                SizedBox(
+                  height: 250,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 10,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: small),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 150,
+                        color: theme.colorScheme.onBackground,
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AuthCubit>().signOut();
-
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(authPage, (route) => false);
-            },
-            child: const Text('LOGOUT'),
           ),
         ],
       ),
     );
   }
 }
+
+// Expanded(
+//             child: BlocBuilder<CartCubit, CartState>(
+//               builder: (context, state) {
+//                 return Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: [
+//                     ElevatedButton(
+//                         onPressed: () {
+//                           if (state.cart.isNotEmpty) {
+//                             context.read<CartCubit>().decrement(state.cart[0]);
+//                           }
+//                         },
+//                         child: const Text('-')),
+//                     Text(
+//                       state.cart.isEmpty ? '0' : state.cart[0].qty.toString(),
+//                       style: const TextStyle(
+//                         fontSize: large3x,
+//                         fontWeight: FontWeight.w700,
+//                       ),
+//                     ),
+//                     ElevatedButton(
+//                         onPressed: () {
+//                           context.read<CartCubit>().increment(const CartModel(
+//                                 productId:
+//                                     '01dbc28d-c779-4ad9-afcd-78ba0a31fd7f',
+//                                 price: 11181,
+//                               ));
+//                         },
+//                         child: const Text('+')),
+//                   ],
+//                 );
+//               },
+//             ),
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               context.read<AuthCubit>().signOut();
+//               Navigator.of(context)
+//                   .pushNamedAndRemoveUntil(authPage, (route) => false);
+//             },
+//             child: const Text('LOGOUT'),
+//           ),

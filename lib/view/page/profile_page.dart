@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gocery/view/bloc/theme/theme_cubit.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,9 +17,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('PROFILE'),
+        child: ElevatedButton(
+            onPressed: () {
+              context.read<ThemeCubit>().toggleTheme();
+            },
+            child: const Text('Toggle Theme')),
       ),
     );
   }

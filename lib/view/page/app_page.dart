@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../bloc/app/app_cubit.dart';
 import '../bloc/cart/cart_cubit.dart';
-import '../bloc/category/category_cubit.dart';
 import '../bloc/chat/chat_cubit.dart';
 import 'chat_page.dart';
 import 'home_page.dart';
@@ -68,16 +67,11 @@ class _AppPageState extends State<AppPage> {
         body: PageView(
           controller: _pageViewController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => CategoryCubit()),
-              ],
-              child: const HomePage(),
-            ),
-            const OrderPage(),
-            const ChatPage(),
-            const ProfilePage(),
+          children: const [
+            HomePage(),
+            OrderPage(),
+            ChatPage(),
+            ProfilePage(),
           ],
         ),
         bottomNavigationBar: Container(
