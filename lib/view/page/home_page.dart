@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gocery/view/bloc/banner/banner_cubit.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../common/config/const.dart';
 import '../bloc/cart/cart_cubit.dart';
@@ -48,13 +49,13 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: theme.colorScheme.surface,
         title: Container(
           width: double.infinity,
-          height: 36,
+          height: 5.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
             border: Border.all(color: theme.colorScheme.primary),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: small),
+            padding: EdgeInsets.symmetric(horizontal: 3.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -62,13 +63,13 @@ class _HomePageState extends State<HomePage> {
                   'Cari di sini',
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,
-                    fontSize: medium,
+                    fontSize: 12.sp,
                   ),
                 ),
                 FaIcon(
                   FontAwesomeIcons.magnifyingGlass,
                   color: theme.colorScheme.primary,
-                  size: 20,
+                  size: 15.sp,
                 )
               ],
             ),
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                   child: FaIcon(
                     FontAwesomeIcons.cartShopping,
                     color: theme.colorScheme.onSurface,
-                    size: 20,
+                    size: 15.sp,
                   ),
                 );
               },
@@ -114,22 +115,20 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             color: theme.colorScheme.surface,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: medium),
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: BlocBuilder<CategoryCubit, CategoryState>(
                 bloc: categoryBloc,
                 builder: (context, state) {
-                  final categoryLoading = ListView.builder(
+                  final categoryLoading = ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
+                    separatorBuilder: (context, index) => SizedBox(width: 2.w),
                     itemBuilder: (context, index) {
-                      return const Padding(
-                        padding: EdgeInsets.only(right: 4),
-                        child: Center(
-                          child: ShimmerLoader(
-                            width: 100,
-                            radius: 100,
-                            height: 35,
-                          ),
+                      return Center(
+                        child: ShimmerLoader(
+                          width: 20.w,
+                          height: 4.h,
+                          radius: 100,
                         ),
                       );
                     },
@@ -140,26 +139,25 @@ class _HomePageState extends State<HomePage> {
                   }
 
                   if (state.categories.isNotEmpty) {
-                    return ListView.builder(
+                    return ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: state.categories.length,
+                      separatorBuilder: (context, index) =>
+                          SizedBox(width: 2.w),
                       itemBuilder: (context, index) {
                         final category = state.categories[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: InputChip(
-                            onPressed: () {
-                              //
-                            },
-                            backgroundColor: theme.colorScheme.primary,
-                            elevation: 0,
-                            pressElevation: 0,
-                            label: Text(
-                              category.name.toString(),
-                              style: TextStyle(
-                                color: theme.colorScheme.onPrimary,
-                                fontSize: small,
-                              ),
+                        return InputChip(
+                          onPressed: () {
+                            //
+                          },
+                          backgroundColor: theme.colorScheme.primary,
+                          elevation: 0,
+                          pressElevation: 0,
+                          label: Text(
+                            category.name.toString(),
+                            style: TextStyle(
+                              color: theme.colorScheme.onPrimary,
+                              fontSize: 10.sp,
                             ),
                           ),
                         );
@@ -172,13 +170,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const SizedBox(height: medium),
+          SizedBox(height: 2.h),
           Container(
             width: double.infinity,
-            height: 150,
-            padding: const EdgeInsets.symmetric(horizontal: medium),
+            height: 20.h,
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(medium),
+              borderRadius: BorderRadius.circular(4.w),
               child: BlocBuilder<BannerCubit, BannerState>(
                 bloc: bannerBloc,
                 builder: (context, state) {
@@ -208,7 +206,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const SizedBox(height: medium),
+          SizedBox(height: 2.h),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: medium),
             child: Column(
@@ -220,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                       'Paling Laku',
                       style: TextStyle(
                         color: theme.colorScheme.onBackground,
-                        fontSize: medium,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -228,23 +226,22 @@ class _HomePageState extends State<HomePage> {
                       'Lihat Semua',
                       style: TextStyle(
                         color: theme.colorScheme.primary,
-                        fontSize: medium,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: small),
+                SizedBox(height: 1.h),
                 SizedBox(
-                  height: 250,
+                  height: 34.h,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: small),
+                    separatorBuilder: (context, index) => SizedBox(width: 3.w),
                     itemBuilder: (context, index) {
                       return Container(
-                        width: 150,
+                        width: 40.w,
                         color: theme.colorScheme.onBackground,
                       );
                     },

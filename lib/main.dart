@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:sizer/sizer.dart';
 
 import 'common/config/routes.dart';
 import 'common/config/style.dart';
@@ -37,14 +38,16 @@ class Gocery extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
-            title: 'Gocery',
-            debugShowCheckedModeBanner: false,
-            themeMode: state.themeMode,
-            theme: Style.light,
-            darkTheme: Style.dark,
-            routes: Routes.list(),
-          );
+          return Sizer(builder: (context, orientation, deviceType) {
+            return MaterialApp(
+              title: 'Gocery',
+              debugShowCheckedModeBanner: false,
+              themeMode: state.themeMode,
+              theme: Style.light,
+              darkTheme: Style.dark,
+              routes: Routes.list(),
+            );
+          });
         },
       ),
     );
