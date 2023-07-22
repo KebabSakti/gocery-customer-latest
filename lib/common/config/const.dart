@@ -14,6 +14,8 @@ const cart = '$path/app/carts';
 const chat = '$path/app/chats';
 const category = '$path/app/categories';
 const banner = '$path/app/banners';
+const product = '$path/app/products';
+const bundle = '$path/app/bundles';
 
 //ASSETS
 const goceryIconWhite = 'asset/image/gocery_icon_white.png';

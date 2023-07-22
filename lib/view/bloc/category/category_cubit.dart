@@ -13,10 +13,14 @@ class CategoryCubit extends Cubit<CategoryState> {
   final _categoryController = CategoryController();
 
   Future<void> load({Map<String, dynamic>? option}) async {
-    emit(state.copyWith(loading: true));
+    try {
+      emit(state.copyWith(loading: true));
 
-    final categories = await _categoryController.index(option: option);
+      final categories = await _categoryController.index(option: option);
 
-    emit(CategoryState(categories: categories));
+      emit(CategoryState(categories: categories));
+    } on Exception catch (e) {
+      emit(state.copyWith(loading: false, exception: e));
+    }
   }
 }

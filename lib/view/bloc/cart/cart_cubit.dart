@@ -80,17 +80,4 @@ class CartCubit extends Cubit<CartState> {
       emit(state.copyWith(loading: false, exception: e));
     }
   }
-
-  CartModel? item(String productId) {
-    CartModel? cartModel;
-
-    final index =
-        state.cart.indexWhere((element) => element.productId == productId);
-
-    if (index > 0) {
-      cartModel = state.cart[index];
-    }
-
-    return cartModel;
-  }
 }

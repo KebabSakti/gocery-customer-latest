@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../common/config/const.dart';
+import 'package:sizer/sizer.dart';
 
 class MButton extends StatelessWidget {
   const MButton({
@@ -32,7 +31,7 @@ class MButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: color ?? theme.colorScheme.primary,
-        minimumSize: Size.fromHeight(size ?? 45),
+        minimumSize: Size.fromHeight(size ?? 5.7.h),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius ?? 50)),
         disabledBackgroundColor: Colors.grey[800],
@@ -47,7 +46,7 @@ class MButton extends StatelessWidget {
             text ?? '',
             style: TextStyle(
               color: textColor ?? theme.colorScheme.onPrimary,
-              fontSize: textSize ?? medium,
+              fontSize: textSize ?? 12.sp,
             ),
           ),
     );

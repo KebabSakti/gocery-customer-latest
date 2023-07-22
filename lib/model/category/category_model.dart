@@ -8,7 +8,7 @@ class CategoryModel with _$CategoryModel {
   const factory CategoryModel({
     String? id,
     String? name,
-    String? image1,
+    String? image,
     String? description,
   }) = _CategoryModel;
 

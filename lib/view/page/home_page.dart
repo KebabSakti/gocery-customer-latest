@@ -3,12 +3,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gocery/view/bloc/banner/banner_cubit.dart';
+import 'package:gocery/model/cart/cart_model.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../common/config/const.dart';
+import '../../model/core/query_model.dart';
+import '../bloc/banner/banner_cubit.dart';
+import '../bloc/bundle/bundle_cubit.dart';
 import '../bloc/cart/cart_cubit.dart';
 import '../bloc/category/category_cubit.dart';
+import '../bloc/product/product_cubit.dart';
+import '../widget/m_button.dart';
 import '../widget/shimmer_loader.dart';
 import '../widget/widget_carousel.dart';
 
@@ -22,11 +27,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final categoryBloc = CategoryCubit();
   final bannerBloc = BannerCubit();
+  final popularProductBloc = ProductCubit();
+  final bundleCubit = BundleCubit();
 
   @override
   void initState() {
     categoryBloc.load();
     bannerBloc.load();
+
+    popularProductBloc.load(
+      option: QueryModel(
+          paginate: QueryPaginate(limit: 10, offset: 0),
+          sort: QuerySorting(
+              field: 'sold', direction: QuerySortingDirection.desc)),
+    );
+
+    bundleCubit.load();
 
     super.initState();
   }
@@ -35,6 +51,8 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     categoryBloc.close();
     bannerBloc.close();
+    popularProductBloc.close();
+    bundleCubit.close();
 
     super.dispose();
   }
@@ -49,7 +67,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: theme.colorScheme.surface,
         title: Container(
           width: double.infinity,
-          height: 5.h,
+          height: 4.5.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
             border: Border.all(color: theme.colorScheme.primary),
@@ -70,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                   FontAwesomeIcons.magnifyingGlass,
                   color: theme.colorScheme.primary,
                   size: 15.sp,
-                )
+                ),
               ],
             ),
           ),
@@ -146,18 +164,23 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(width: 2.w),
                       itemBuilder: (context, index) {
                         final category = state.categories[index];
-                        return InputChip(
-                          onPressed: () {
-                            //
-                          },
-                          backgroundColor: theme.colorScheme.primary,
-                          elevation: 0,
-                          pressElevation: 0,
-                          label: Text(
-                            category.name.toString(),
-                            style: TextStyle(
-                              color: theme.colorScheme.onPrimary,
-                              fontSize: 10.sp,
+                        return Center(
+                          child: Container(
+                            height: 4.h,
+                            padding: EdgeInsets.symmetric(horizontal: 3.w),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              borderRadius: BorderRadius.circular(100.sp),
+                            ),
+                            child: Center(
+                              child: Text(
+                                category.name.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
                             ),
                           ),
                         );
@@ -218,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                       'Paling Laku',
                       style: TextStyle(
                         color: theme.colorScheme.onBackground,
-                        fontSize: 12.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -226,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                       'Lihat Semua',
                       style: TextStyle(
                         color: theme.colorScheme.primary,
-                        fontSize: 12.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -234,16 +257,167 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 1.h),
                 SizedBox(
-                  height: 34.h,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (context, index) => SizedBox(width: 3.w),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: 40.w,
-                        color: theme.colorScheme.onBackground,
+                  height: 40.h,
+                  child: BlocBuilder<ProductCubit, ProductState>(
+                    bloc: popularProductBloc,
+                    builder: (context, state) {
+                      final popularProductLoading = ListView.separated(
+                        itemCount: 5,
+                        scrollDirection: Axis.horizontal,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(width: 2.w),
+                        itemBuilder: (context, index) => ShimmerLoader(
+                          width: 40.w,
+                          radius: 4.w,
+                        ),
                       );
+
+                      if (state.loading) {
+                        return popularProductLoading;
+                      }
+
+                      if (state.products.isNotEmpty) {
+                        return ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(width: 2.w),
+                          itemBuilder: (context, index) {
+                            final popularProduct = state.products[index];
+
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(4.w),
+                              child: Container(
+                                width: 40.w,
+                                color: theme.colorScheme.surface,
+                                child: Column(
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: popularProduct.image!,
+                                      fit: BoxFit.cover,
+                                      height: 20.h,
+                                      width: double.infinity,
+                                      placeholder: (context, url) =>
+                                          const ShimmerLoader(),
+                                    ),
+                                    SizedBox(height: 1.h),
+                                    Text(
+                                      popularProduct.name!,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: theme.colorScheme.onSurface,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      popularProduct.price!.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: theme.colorScheme.onSurface,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      popularProduct.unit!,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: theme.colorScheme.onSurface,
+                                        fontSize: 8.sp,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 4.w,
+                                        vertical: 1.h,
+                                      ),
+                                      child: BlocBuilder<CartCubit, CartState>(
+                                        builder: (context, state) {
+                                          final index = state.cart.indexWhere(
+                                              (element) =>
+                                                  element.productId ==
+                                                  popularProduct.id);
+
+                                          if (index >= 0) {
+                                            final cartItem = state.cart[index];
+
+                                            return Row(
+                                              key: UniqueKey(),
+                                              children: [
+                                                Expanded(
+                                                  key: UniqueKey(),
+                                                  child: MButton(
+                                                    size: 4.h,
+                                                    color: theme
+                                                        .colorScheme.primary,
+                                                    text: '-',
+                                                    textSize: 14.sp,
+                                                    onPressed: () {
+                                                      context
+                                                          .read<CartCubit>()
+                                                          .decrement(cartItem);
+                                                    },
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  key: UniqueKey(),
+                                                  width: 10.w,
+                                                  child: Center(
+                                                    child: Text(
+                                                      cartItem.qty.toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  key: UniqueKey(),
+                                                  child: MButton(
+                                                    size: 4.h,
+                                                    color: theme
+                                                        .colorScheme.primary,
+                                                    text: '+',
+                                                    textSize: 14.sp,
+                                                    onPressed: () {
+                                                      context
+                                                          .read<CartCubit>()
+                                                          .increment(cartItem);
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }
+
+                                          return MButton(
+                                            key: UniqueKey(),
+                                            size: 4.h,
+                                            color: theme.colorScheme.primary,
+                                            text: 'Beli',
+                                            textSize: 12.sp,
+                                            onPressed: () {
+                                              context
+                                                  .read<CartCubit>()
+                                                  .increment(CartModel(
+                                                      productId:
+                                                          popularProduct.id));
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      return popularProductLoading;
                     },
                   ),
                 ),
@@ -255,46 +429,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// Expanded(
-//             child: BlocBuilder<CartCubit, CartState>(
-//               builder: (context, state) {
-//                 return Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                   children: [
-//                     ElevatedButton(
-//                         onPressed: () {
-//                           if (state.cart.isNotEmpty) {
-//                             context.read<CartCubit>().decrement(state.cart[0]);
-//                           }
-//                         },
-//                         child: const Text('-')),
-//                     Text(
-//                       state.cart.isEmpty ? '0' : state.cart[0].qty.toString(),
-//                       style: const TextStyle(
-//                         fontSize: large3x,
-//                         fontWeight: FontWeight.w700,
-//                       ),
-//                     ),
-//                     ElevatedButton(
-//                         onPressed: () {
-//                           context.read<CartCubit>().increment(const CartModel(
-//                                 productId:
-//                                     '01dbc28d-c779-4ad9-afcd-78ba0a31fd7f',
-//                                 price: 11181,
-//                               ));
-//                         },
-//                         child: const Text('+')),
-//                   ],
-//                 );
-//               },
-//             ),
-//           ),
-//           ElevatedButton(
-//             onPressed: () {
-//               context.read<AuthCubit>().signOut();
-//               Navigator.of(context)
-//                   .pushNamedAndRemoveUntil(authPage, (route) => false);
-//             },
-//             child: const Text('LOGOUT'),
-//           ),

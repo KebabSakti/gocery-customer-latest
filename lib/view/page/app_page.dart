@@ -34,7 +34,7 @@ class _AppPageState extends State<AppPage> {
     ),
     BottomNavigationBarItem(
       label: 'Profile',
-      icon: FaIcon(FontAwesomeIcons.circleUser),
+      icon: FaIcon(FontAwesomeIcons.solidCircleUser),
     ),
   ];
 
