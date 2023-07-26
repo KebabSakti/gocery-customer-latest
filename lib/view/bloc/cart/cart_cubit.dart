@@ -40,7 +40,8 @@ class CartCubit extends Cubit<CartState> {
 
     if (index < 0) {
       final cartItem = cartModel.copyWith(qty: 1, id: uuid());
-      final updatedCart = [cartItem];
+      final updatedCart = List<CartModel>.from(state.cart);
+      updatedCart.add(cartItem);
 
       _cartController.upsert(cartItem);
       emit(CartState(cart: updatedCart));
