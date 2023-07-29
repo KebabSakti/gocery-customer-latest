@@ -38,6 +38,7 @@ dependencies:
   uuid: ^3.0.7
   socket_io_client: ^2.0.2
   sizer: ^2.0.15
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

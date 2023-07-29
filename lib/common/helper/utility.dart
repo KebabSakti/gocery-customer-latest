@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 
@@ -49,4 +50,10 @@ String uuid() {
   const uuid = Uuid();
 
   return uuid.v1();
+}
+
+String money(double value) {
+  final formatter = NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0);
+
+  return formatter.format(value);
 }
