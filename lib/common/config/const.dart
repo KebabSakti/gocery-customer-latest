@@ -4,7 +4,8 @@ import 'dart:ui';
 const initPage = '/';
 const authPage = '/auth';
 const appPage = '/app';
-const homePage = '/app/home';
+const homePage = '/home';
+const productDetailPage = '/productDetail';
 
 //REMOTE ROUTE
 const path = 'api/v1/customer';

@@ -1,18 +1,16 @@
-import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../common/config/const.dart';
 import '../../model/core/query_model.dart';
 import '../bloc/banner/banner_cubit.dart';
 import '../bloc/bundle/bundle_cubit.dart';
-import '../bloc/cart/cart_cubit.dart';
 import '../bloc/category/category_cubit.dart';
 import '../bloc/product/product_cubit.dart';
 import '../widget/bundle_item.dart';
+import '../widget/cart_indicator.dart';
 import '../widget/product_item.dart';
 import '../widget/shimmer_loader.dart';
 import '../widget/widget_carousel.dart';
@@ -102,351 +100,328 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //
-            },
-            icon: BlocBuilder<CartCubit, CartState>(
-              builder: (context, state) {
-                final sum = state.cart.fold(0,
-                    (previousValue, element) => previousValue + element.qty!);
-
-                return badges.Badge(
-                  showBadge: sum > 0,
-                  position: badges.BadgePosition.topEnd(top: -12, end: -8),
-                  badgeStyle:
-                      badges.BadgeStyle(badgeColor: theme.colorScheme.primary),
-                  badgeContent: Text(
-                    sum.toString(),
-                    style: TextStyle(
-                      fontSize: small2x,
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                  child: FaIcon(
-                    FontAwesomeIcons.cartShopping,
-                    color: theme.colorScheme.onSurface,
-                    size: 15.sp,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+        actions: const [CartIndicator()],
       ),
-      body: ListView(
-        children: [
-          Container(
-            height: kToolbarHeight,
-            width: double.infinity,
-            color: theme.colorScheme.surface,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
-              child: BlocBuilder<CategoryCubit, CategoryState>(
-                bloc: categoryBloc,
-                builder: (context, state) {
-                  final categoryLoading = ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (context, index) => SizedBox(width: 2.w),
-                    itemBuilder: (context, index) {
-                      return Center(
-                        child: ShimmerLoader(
-                          width: 20.w,
-                          height: 4.h,
-                          radius: 100,
-                        ),
-                      );
-                    },
-                  );
-
-                  if (state.loading) {
-                    return categoryLoading;
-                  }
-
-                  if (state.categories.isNotEmpty) {
-                    return ListView.separated(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: kToolbarHeight,
+              width: double.infinity,
+              color: theme.colorScheme.surface,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                child: BlocBuilder<CategoryCubit, CategoryState>(
+                  bloc: categoryBloc,
+                  builder: (context, state) {
+                    final categoryLoading = ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: state.categories.length,
+                      itemCount: 10,
                       separatorBuilder: (context, index) =>
                           SizedBox(width: 2.w),
                       itemBuilder: (context, index) {
-                        final category = state.categories[index];
                         return Center(
-                          child: Container(
+                          child: ShimmerLoader(
+                            width: 20.w,
                             height: 4.h,
-                            padding: EdgeInsets.symmetric(horizontal: 3.w),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary,
-                              borderRadius: BorderRadius.circular(100.sp),
-                            ),
-                            child: Center(
-                              child: Text(
-                                category.name.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: theme.colorScheme.onPrimary,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ),
+                            radius: 100,
                           ),
                         );
                       },
                     );
-                  }
 
-                  return categoryLoading;
-                },
+                    if (state.loading) {
+                      return categoryLoading;
+                    }
+
+                    if (state.categories.isNotEmpty) {
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.categories.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(width: 2.w),
+                        itemBuilder: (context, index) {
+                          final category = state.categories[index];
+                          return Center(
+                            child: Container(
+                              height: 4.h,
+                              padding: EdgeInsets.symmetric(horizontal: 3.w),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary,
+                                borderRadius: BorderRadius.circular(100.sp),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  category.name.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onPrimary,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+
+                    return categoryLoading;
+                  },
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 2.h),
-          Container(
-            width: double.infinity,
-            height: 20.h,
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4.w),
-              child: BlocBuilder<BannerCubit, BannerState>(
-                bloc: bannerBloc,
-                builder: (context, state) {
-                  const bannerLoading = ShimmerLoader();
+            SizedBox(height: 2.h),
+            Container(
+              width: double.infinity,
+              height: 20.h,
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4.w),
+                child: BlocBuilder<BannerCubit, BannerState>(
+                  bloc: bannerBloc,
+                  builder: (context, state) {
+                    const bannerLoading = ShimmerLoader();
 
-                  if (state.loading) {
+                    if (state.loading) {
+                      return bannerLoading;
+                    }
+
+                    if (state.banners.isNotEmpty) {
+                      final bannerWidget = List.generate(
+                        state.banners.length,
+                        (index) => CachedNetworkImage(
+                          imageUrl: state.banners[index].image!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          placeholder: (context, url) => bannerLoading,
+                        ),
+                      );
+
+                      return WidgetCarousel(children: bannerWidget);
+                    }
+
                     return bannerLoading;
-                  }
-
-                  if (state.banners.isNotEmpty) {
-                    final bannerWidget = List.generate(
-                      state.banners.length,
-                      (index) => CachedNetworkImage(
-                        imageUrl: state.banners[index].image!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        placeholder: (context, url) => bannerLoading,
-                      ),
-                    );
-
-                    return WidgetCarousel(children: bannerWidget);
-                  }
-
-                  return bannerLoading;
-                },
+                  },
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 2.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Paling Laku',
-                      style: TextStyle(
-                        color: theme.colorScheme.onBackground,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      'Lihat Semua',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.h),
-                SizedBox(
-                  height: 38.h,
-                  child: BlocBuilder<ProductCubit, ProductState>(
-                    bloc: popularProductBloc,
-                    builder: (context, state) {
-                      final popularProductLoading = ListView.separated(
-                        itemCount: 5,
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(width: 2.w),
-                        itemBuilder: (context, index) => ShimmerLoader(
-                          width: 40.w,
-                          radius: 4.w,
+            SizedBox(height: 2.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Paling Laku',
+                        style: TextStyle(
+                          color: theme.colorScheme.onBackground,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
                         ),
-                      );
+                      ),
+                      Text(
+                        'Lihat Semua',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 1.h),
+                  SizedBox(
+                    height: 38.h,
+                    child: BlocBuilder<ProductCubit, ProductState>(
+                      bloc: popularProductBloc,
+                      builder: (context, state) {
+                        final popularProductLoading = ListView.separated(
+                          physics: const BouncingScrollPhysics(
+                              decelerationRate: ScrollDecelerationRate.fast),
+                          itemCount: 5,
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(width: 2.w),
+                          itemBuilder: (context, index) => ShimmerLoader(
+                            width: 40.w,
+                            radius: 4.w,
+                          ),
+                        );
 
-                      if (state.loading) {
+                        if (state.loading) {
+                          return popularProductLoading;
+                        }
+
+                        if (state.products.isNotEmpty) {
+                          return ListView.separated(
+                            physics: const BouncingScrollPhysics(
+                                decelerationRate: ScrollDecelerationRate.fast),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.products.length,
+                            separatorBuilder: (context, index) =>
+                                SizedBox(width: 2.w),
+                            itemBuilder: (context, index) =>
+                                ProductItem(product: state.products[index]),
+                          );
+                        }
+
                         return popularProductLoading;
-                      }
-
-                      if (state.products.isNotEmpty) {
-                        return ListView.separated(
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 2.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Baru Datang',
+                        style: TextStyle(
+                          color: theme.colorScheme.onBackground,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        'Lihat Semua',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 1.h),
+                  SizedBox(
+                    height: 38.h,
+                    child: BlocBuilder<ProductCubit, ProductState>(
+                      bloc: newProductBloc,
+                      builder: (context, state) {
+                        final newProductLoading = ListView.separated(
                           physics: const BouncingScrollPhysics(
                               decelerationRate: ScrollDecelerationRate.fast),
+                          itemCount: 5,
                           scrollDirection: Axis.horizontal,
-                          itemCount: state.products.length,
                           separatorBuilder: (context, index) =>
                               SizedBox(width: 2.w),
-                          itemBuilder: (context, index) =>
-                              ProductItem(product: state.products[index]),
+                          itemBuilder: (context, index) => ShimmerLoader(
+                            width: 40.w,
+                            radius: 4.w,
+                          ),
                         );
-                      }
 
-                      return popularProductLoading;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 2.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Baru Datang',
-                      style: TextStyle(
-                        color: theme.colorScheme.onBackground,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      'Lihat Semua',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.h),
-                SizedBox(
-                  height: 38.h,
-                  child: BlocBuilder<ProductCubit, ProductState>(
-                    bloc: newProductBloc,
-                    builder: (context, state) {
-                      final newProductLoading = ListView.separated(
-                        itemCount: 5,
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(width: 2.w),
-                        itemBuilder: (context, index) => ShimmerLoader(
-                          width: 40.w,
-                          radius: 4.w,
-                        ),
-                      );
+                        if (state.loading) {
+                          return newProductLoading;
+                        }
 
-                      if (state.loading) {
+                        if (state.products.isNotEmpty) {
+                          return ListView.separated(
+                            physics: const BouncingScrollPhysics(
+                                decelerationRate: ScrollDecelerationRate.fast),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.products.length,
+                            separatorBuilder: (context, index) =>
+                                SizedBox(width: 2.w),
+                            itemBuilder: (context, index) =>
+                                ProductItem(product: state.products[index]),
+                          );
+                        }
+
                         return newProductLoading;
-                      }
-
-                      if (state.products.isNotEmpty) {
-                        return ListView.separated(
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            BlocBuilder<BundleCubit, BundleState>(
+              bloc: bundleCubit,
+              builder: (context, state) {
+                final bundleLoading = Padding(
+                  padding: EdgeInsets.only(top: 2.h, left: 4.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ShimmerLoader(width: 30.w, height: 2.h),
+                          ShimmerLoader(width: 30.w, height: 2.h),
+                        ],
+                      ),
+                      SizedBox(height: 1.h),
+                      ShimmerLoader(width: double.infinity, height: 2.h),
+                      SizedBox(height: 1.h),
+                      ShimmerLoader(width: double.infinity, height: 2.h),
+                      SizedBox(height: 1.h),
+                      SizedBox(
+                        height: 38.h,
+                        child: ListView.separated(
+                          itemCount: 5,
+                          scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(
                               decelerationRate: ScrollDecelerationRate.fast),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.products.length,
                           separatorBuilder: (context, index) =>
                               SizedBox(width: 2.w),
-                          itemBuilder: (context, index) =>
-                              ProductItem(product: state.products[index]),
-                        );
-                      }
-
-                      return newProductLoading;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          BlocBuilder<BundleCubit, BundleState>(
-            bloc: bundleCubit,
-            builder: (context, state) {
-              final bundleLoading = Padding(
-                padding: EdgeInsets.only(top: 2.h, left: 4.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ShimmerLoader(width: 30.w, height: 2.h),
-                        ShimmerLoader(width: 30.w, height: 2.h),
-                      ],
-                    ),
-                    SizedBox(height: 1.h),
-                    ShimmerLoader(width: double.infinity, height: 2.h),
-                    SizedBox(height: 1.h),
-                    ShimmerLoader(width: double.infinity, height: 2.h),
-                    SizedBox(height: 1.h),
-                    SizedBox(
-                      height: 38.h,
-                      child: ListView.separated(
-                        itemCount: 5,
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(
-                            decelerationRate: ScrollDecelerationRate.fast),
-                        separatorBuilder: (context, index) =>
-                            SizedBox(width: 2.w),
-                        itemBuilder: (context, index) => ShimmerLoader(
-                          width: 40.w,
-                          radius: 4.w,
+                          itemBuilder: (context, index) => ShimmerLoader(
+                            width: 40.w,
+                            radius: 4.w,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-
-              if (state.loading) {
-                return bundleLoading;
-              }
-
-              if (state.bundles.isNotEmpty) {
-                return Padding(
-                  padding: EdgeInsets.only(top: 2.h, left: 4.w, right: 4.w),
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.bundles.length,
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) => SizedBox(height: 2.h),
-                    itemBuilder: (context, index) =>
-                        BundleItem(bundle: state.bundles[index]),
+                    ],
                   ),
                 );
-              }
 
-              return bundleLoading;
-            },
-          ),
-          SizedBox(height: 1.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: TextButton(
-              onPressed: () {
-                //
+                if (state.loading) {
+                  return bundleLoading;
+                }
+
+                if (state.bundles.isNotEmpty) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: 2.h, left: 4.w, right: 4.w),
+                    child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.bundles.length,
+                      shrinkWrap: true,
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 2.h),
+                      itemBuilder: (context, index) =>
+                          BundleItem(bundle: state.bundles[index]),
+                    ),
+                  );
+                }
+
+                return bundleLoading;
               },
-              style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100))),
-              child: const Text('Lihat Semua Produk'),
             ),
-          ),
-          SizedBox(height: 1.h),
-        ],
+            SizedBox(height: 1.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: TextButton(
+                onPressed: () {
+                  //
+                },
+                style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100))),
+                child: const Text('Lihat Semua Produk'),
+              ),
+            ),
+            SizedBox(height: 1.h),
+          ],
+        ),
       ),
     );
   }

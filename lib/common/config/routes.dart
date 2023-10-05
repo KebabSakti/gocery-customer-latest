@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../view/page/app_page.dart';
 import '../../view/page/auth_page.dart';
 import '../../view/page/init_page.dart';
+import '../../view/page/product_detail_page.dart';
 import 'const.dart';
 
 class Routes {
@@ -11,6 +12,11 @@ class Routes {
       initPage: (context) => const InitPage(),
       authPage: (context) => const AuthPage(),
       appPage: (context) => const AppPage(),
+      productDetailPage: (context) {
+        final productId = ModalRoute.of(context)!.settings.arguments as String;
+
+        return ProductDetailPage(productId: productId);
+      },
     };
   }
 }

@@ -69,6 +69,26 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
+  Future<void> setQty(CartModel cartModel) async {
+    final index = state.cart
+        .indexWhere((element) => element.productId == cartModel.productId);
+
+    if (cartModel.qty != null && cartModel.qty! > 0) {
+      if (index >= 0) {
+        final cartItem = state.cart[index];
+        final qty = cartModel.qty!;
+        final total = qty * cartItem.price!;
+        final updatedCart = List<CartModel>.from(state.cart);
+        updatedCart[index] = cartItem.copyWith(qty: qty, total: total);
+
+        _cartController.upsert(cartItem.copyWith(qty: qty));
+        emit(CartState(cart: updatedCart));
+      }
+    } else {
+      delete(cartModel.id!);
+    }
+  }
+
   Future<void> delete(String cartId) async {
     try {
       _cartController.delete(cartId);
